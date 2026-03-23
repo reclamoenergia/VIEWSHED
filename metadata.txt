@@ -1,0 +1,20 @@
+[general]
+name=Visible Obstacles Count
+qgisMinimumVersion=3.40
+qgisMaximumVersion=3.99
+description=Counts, for each DTM pixel, how many point obstacles are visible within a maximum distance.
+version=1.0.0
+author=OpenAI
+email=support@openai.com
+about=Computes a GeoTIFF raster where each valid DTM pixel stores the number of visible point obstacles, using line-of-sight checks against the DTM surface only.
+category=Raster
+icon=
+homepage=https://openai.com/
+tracker=
+repository=
+tags=viewshed,visibility,dtm,line of sight,obstacles,raster
+experimental=False
+deprecated=False
+
+[help]
+
