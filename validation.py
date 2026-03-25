@@ -13,6 +13,19 @@ class ValidationError(Exception):
 class InputValidator:
     """Validates the plugin inputs before the computation starts."""
 
+    @staticmethod
+    def _is_projected_crs(crs):
+        """Return True when CRS is projected, with compatibility across QGIS versions."""
+        is_projected = getattr(crs, "isProjected", None)
+        if callable(is_projected):
+            return bool(is_projected())
+
+        is_geographic = getattr(crs, "isGeographic", None)
+        if callable(is_geographic):
+            return not bool(is_geographic())
+
+        return crs.mapUnits() == QgsUnitTypes.DistanceMeters
+
     def validate(self, dtm_layer, obstacle_layer, height_field, observer_height, max_distance, output_path):
         if dtm_layer is None:
             raise ValidationError("Select a DTM raster layer.")
@@ -38,7 +51,7 @@ class InputValidator:
             raise ValidationError("Both layers must have a valid CRS.")
         if dtm_crs != obstacle_crs:
             raise ValidationError("DTM raster and obstacle layer must use the same CRS.")
-        if not dtm_crs.isProjected():
+        if not self._is_projected_crs(dtm_crs):
             raise ValidationError("The CRS must be projected and metric.")
         if dtm_crs.mapUnits() != QgsUnitTypes.DistanceMeters:
             raise ValidationError("The CRS map units must be meters.")
